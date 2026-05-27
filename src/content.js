@@ -3,6 +3,7 @@
     apiKey: "agcGeminiApiKey",
     groqApiKey: "agcGroqApiKey",
     provider: "agcProvider",
+    selectedRuleId: "agcSelectedRuleId",
     rules: "agcGenerationRules"
   };
   const TARGET_SELECTOR = "div.form-control.field[contenteditable='true']";
@@ -11,6 +12,7 @@
     apiKey: "",
     groqApiKey: "",
     provider: "gemini",
+    selectedRuleId: "",
     rules: [],
     editingRuleId: null,
     expandedRuleId: null,
@@ -38,6 +40,12 @@
             <select class="agc-input" data-role="provider-select">
               <option value="gemini">Gemini API</option>
               <option value="groq">Groq API</option>
+            </select>
+          </label>
+          <label class="agc-field" data-role="rule-select-field" hidden>
+            <span class="agc-label">Rule</span>
+            <select class="agc-input" data-role="rule-select">
+              <option value="">No rule</option>
             </select>
           </label>
           <label class="agc-field">
@@ -94,6 +102,8 @@
   const apiKeyInput = root.querySelector("[data-role='api-key']");
   const groqApiKeyInput = root.querySelector("[data-role='groq-api-key']");
   const providerSelect = root.querySelector("[data-role='provider-select']");
+  const ruleSelectField = root.querySelector("[data-role='rule-select-field']");
+  const ruleSelect = root.querySelector("[data-role='rule-select']");
   const activeProviderStatus = root.querySelector("[data-role='active-provider']");
   const settingsStatus = root.querySelector("[data-role='settings-status']");
   const generateStatus = root.querySelector("[data-role='generate-status']");
@@ -151,6 +161,28 @@
     const statusText = `✓ ${providerName}${apiKeySet ? " (configured)" : " (no API Key)"}`;
     activeProviderStatus.textContent = statusText;
     activeProviderStatus.style.color = apiKeySet ? "#2e7d32" : "#f57f17";
+  }
+
+  function renderRuleSelect() {
+    const selectedRuleExists = state.rules.some((rule) => rule.id === state.selectedRuleId);
+    if (!selectedRuleExists) state.selectedRuleId = "";
+
+    ruleSelect.innerHTML = "";
+
+    const emptyOption = document.createElement("option");
+    emptyOption.value = "";
+    emptyOption.textContent = "No rule";
+    ruleSelect.appendChild(emptyOption);
+
+    state.rules.forEach((rule) => {
+      const option = document.createElement("option");
+      option.value = rule.id;
+      option.textContent = rule.name;
+      ruleSelect.appendChild(option);
+    });
+
+    ruleSelect.value = state.selectedRuleId;
+    ruleSelectField.hidden = state.rules.length === 0;
   }
 
   function renderRules() {
@@ -217,6 +249,7 @@
   async function persistRules() {
     await storageSet({ [STORAGE_KEYS.rules]: state.rules });
     renderRules();
+    renderRuleSelect();
   }
 
   async function saveRule() {
@@ -244,13 +277,14 @@
     state.rules = state.rules.filter((rule) => rule.id !== ruleId);
     if (state.expandedRuleId === ruleId) state.expandedRuleId = null;
     if (state.editingRuleId === ruleId) resetRuleForm();
+    if (state.selectedRuleId === ruleId) state.selectedRuleId = "";
+    await storageSet({ [STORAGE_KEYS.selectedRuleId]: state.selectedRuleId });
     await persistRules();
   }
 
   function buildPrompt(word) {
-    const rulesText = state.rules.length
-      ? state.rules.map((rule) => `Rule: ${rule.name}\n${rule.description}`).join("\n\n")
-      : "No custom rules.";
+    const selectedRule = state.rules.find((rule) => rule.id === state.selectedRuleId);
+    const rulesText = selectedRule ? `Rule: ${selectedRule.name}\n${selectedRule.description}` : "No custom rule.";
 
     return [
       "Generate the content for an Anki card field.",
@@ -400,17 +434,20 @@
       [STORAGE_KEYS.apiKey]: "",
       [STORAGE_KEYS.groqApiKey]: "",
       [STORAGE_KEYS.provider]: "gemini",
+      [STORAGE_KEYS.selectedRuleId]: "",
       [STORAGE_KEYS.rules]: []
     });
     state.apiKey = stored[STORAGE_KEYS.apiKey] || "";
     state.groqApiKey = stored[STORAGE_KEYS.groqApiKey] || "";
     state.provider = stored[STORAGE_KEYS.provider] || "gemini";
+    state.selectedRuleId = stored[STORAGE_KEYS.selectedRuleId] || "";
     state.rules = Array.isArray(stored[STORAGE_KEYS.rules]) ? stored[STORAGE_KEYS.rules] : [];
     apiKeyInput.value = state.apiKey;
     groqApiKeyInput.value = state.groqApiKey;
     providerSelect.value = state.provider;
     updateActiveProviderStatus();
     renderRules();
+    renderRuleSelect();
     setActiveTab("generate");
   }
 
@@ -443,6 +480,11 @@
     state.provider = providerSelect.value;
     storageSet({ [STORAGE_KEYS.provider]: state.provider });
     updateActiveProviderStatus();
+  });
+
+  ruleSelect.addEventListener("change", () => {
+    state.selectedRuleId = ruleSelect.value;
+    storageSet({ [STORAGE_KEYS.selectedRuleId]: state.selectedRuleId });
   });
 
   saveRuleButton.addEventListener("click", saveRule);
