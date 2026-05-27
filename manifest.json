@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Anki LLM Copilot",
+  "description": "Floating panel to generate content in AnkiWeb using Gemini or Groq with custom rules.",
+  "version": "1.0.0",
+  "permissions": [],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.groq.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ankiuser.net/add",
+        "https://ankiuser.net/edit/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "css": [
+        "src/content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Anki Gemini Copilot"
+  }
+}

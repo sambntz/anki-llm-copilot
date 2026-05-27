@@ -1,0 +1,261 @@
+#anki-gemini-copilot-root {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 2147483647;
+  color: #172033;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#anki-gemini-copilot-root * {
+  box-sizing: border-box;
+}
+
+.agc-toggle {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: #155eef;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 14px 34px rgba(21, 94, 239, 0.34);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.agc-panel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: min(430px, calc(100vw - 28px));
+  height: calc(100vh - 36px);
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(23, 32, 51, 0.16);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 20px 70px rgba(15, 23, 42, 0.28);
+}
+
+.agc-panel[hidden] {
+  display: none;
+}
+
+.agc-panel:not([hidden]) + .agc-toggle {
+  display: none;
+}
+
+.agc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e4e7ec;
+  background: #f8fafc;
+}
+
+.agc-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.agc-close {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d0d5dd;
+  border-radius: 6px;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.agc-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid #e4e7ec;
+}
+
+.agc-tab {
+  min-height: 38px;
+  border: 0;
+  border-right: 1px solid #e4e7ec;
+  background: #fff;
+  color: #475467;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.agc-tab:last-child {
+  border-right: 0;
+}
+
+.agc-tab[aria-selected="true"] {
+  background: #eef4ff;
+  color: #155eef;
+}
+
+.agc-body {
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+}
+
+.agc-pane[hidden] {
+  display: none;
+}
+
+.agc-field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.agc-label {
+  color: #344054;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.agc-input,
+.agc-textarea {
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  border-radius: 6px;
+  background: #fff;
+  color: #172033;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  padding: 9px 10px;
+}
+
+.agc-input:focus,
+.agc-textarea:focus {
+  border-color: #155eef;
+  box-shadow: 0 0 0 3px rgba(21, 94, 239, 0.14);
+}
+
+.agc-textarea {
+  min-height: 108px;
+  resize: vertical;
+}
+
+.agc-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.agc-button {
+  min-height: 36px;
+  border: 1px solid #155eef;
+  border-radius: 6px;
+  background: #155eef;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 12px;
+}
+
+.agc-button.secondary {
+  border-color: #d0d5dd;
+  background: #fff;
+  color: #344054;
+}
+
+.agc-button.danger {
+  border-color: #d92d20;
+  background: #fff;
+  color: #b42318;
+}
+
+.agc-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.agc-rule-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.agc-rule {
+  border: 1px solid #e4e7ec;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.agc-rule-title {
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  background: #f9fafb;
+  color: #172033;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.agc-rule-detail {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #e4e7ec;
+  color: #475467;
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.agc-status {
+  min-height: 20px;
+  margin-top: 10px;
+  color: #475467;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.agc-status.error {
+  color: #b42318;
+}
+
+.agc-preview {
+  min-height: 118px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid #e4e7ec;
+  border-radius: 6px;
+  background: #fcfcfd;
+  color: #172033;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.agc-preview:empty {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  #anki-gemini-copilot-root {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .agc-panel {
+    bottom: 0;
+    height: calc(100vh - 20px);
+  }
+}
