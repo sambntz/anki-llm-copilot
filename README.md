@@ -2,7 +2,7 @@
 
 Chrome MV3 extension that adds a floating panel to AnkiWeb to generate text with Gemini or Groq and apply it to the editable card field.
 
-![Anki LLM Copilot screenshot](image.png)
+![Anki LLM Copilot screenshot](screenshot.png)
 
 ## Local Installation
 
